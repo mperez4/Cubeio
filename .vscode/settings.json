@@ -1,0 +1,12 @@
+{
+    "extensions.ignoreRecommendations": true,
+    "C_Cpp.default.configurationProvider": "particle.particle-vscode-core",
+    "cortex-debug.openocdPath": "${command:particle.getDebuggerOpenocdPath}",
+    "files.associations": {
+        "*.ino": "cpp"
+    }
+    "workbench.colorCustomizations" : {
+        "terminal.foreground" : "#ffffff",
+        "terminal.background" : "#0432b1"
+    }
+}

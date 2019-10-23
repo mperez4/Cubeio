@@ -16,17 +16,15 @@ class Cubeio{
       setThreshold(int threshold),
       setLedColor(int r, int g, int b),
       setLedBrightness(int brightness);
-      // detachInterrupt();
 
   private:
     int _switchPin, _ledPin, _xPin, _yPin, _zPin;
-    //used to compute pitch roll
     int x_value, y_value, z_value;
     int _threshold, _frequency;
     int active_side;
     int sides_array[6][2] = {{0, 90}, {0, 0}, {180, 270}, {0, 180}, {90, 90}, {270, 90}};
     int side[6] = {1, 2, 3, 4, 5, 6};
-    String payload = "";
+    String payload;
 
     double x_g_value, y_g_value, z_g_value;
     double roll, pitch;

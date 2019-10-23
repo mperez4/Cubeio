@@ -12,6 +12,7 @@ void setup(){
   Serial.begin(9600);
   mycube.setThreshold(30);
   mycube.enableLedControl();
+  mycube.setLedBrightness(50);
 }
 
 void loop(){

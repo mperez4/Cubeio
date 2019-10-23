@@ -4,21 +4,22 @@
 #define PIXEL_TYPE WS2812B
 
 
-Cubeio::Cubeio(const byte switchPin, const byte ledPin, const byte xPin, const byte yPin, const byte zPin)
+Cubeio::Cubeio(const uint8_t switchPin, const uint8_t ledPin, const uint8_t xPin, const uint8_t yPin, const uint8_t zPin)
 {
   _switchPin = switchPin;
   _ledPin = ledPin;
   _xPin = xPin;
   _yPin = yPin;
   _zPin = zPin;
-  pinMode(_switchPin, INPUT);
+
+  pinMode(_switchPin, INPUT_PULLUP);
   externalLed = new Adafruit_NeoPixel(1,1, PIXEL_TYPE);
   externalLed->begin();
 
 }
 
 char Cubeio::getActiveSide(){
-  readData(_xPin, _yPin, _zPin);
+  readSensorData(_xPin, _yPin, _zPin);
 
   x_g_value = ((((double)(x_value * 3.3) / 4095) - 1.65) / 0.330);
   y_g_value = ((((double)(y_value * 3.3) / 4095) - 1.65) / 0.330);
@@ -26,9 +27,6 @@ char Cubeio::getActiveSide(){
 
   roll = (((atan2(y_g_value, z_g_value) * 180) / 3.14) + 180);
   pitch = (((atan2(z_g_value, x_g_value) * 180) / 3.14) + 180);
-  Serial.print(roll);
-  Serial.print("    ");
-  Serial.println(pitch);
 
   for (int i = 0; i < 6; ++i){
     if (roll > sides_array[i][0] - _threshold && roll < sides_array[i][0] + _threshold &&
@@ -76,7 +74,28 @@ void Cubeio::disableLedControl(){
   RGB.control(false);
 }
 
-void Cubeio::readData(int x, int y, int z){
+void Cubeio::interruptHandler(){
+  state = !state;
+  digitalWrite(D7, state);
+}
+
+void Cubeio::attachButton(InterruptMode _mode){
+  attachInterrupt(_switchPin, &Cubeio::interruptHandler, this, _mode);
+}
+
+void Cubeio::detachButton(){
+  detachInterrupt(_switchPin);
+}
+
+bool Cubeio::buttonPressed(){
+  if(!state){
+    return false;
+  }
+  else return true;
+}
+
+
+void Cubeio::readSensorData(int x, int y, int z){
     x_value = analogRead(x);
     y_value = analogRead(y);
     z_value = analogRead(z);

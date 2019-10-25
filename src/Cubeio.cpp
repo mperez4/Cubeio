@@ -19,14 +19,6 @@ Cubeio::Cubeio(const uint8_t switchPin, const uint8_t ledPin, const uint8_t xPin
 }
 
 char Cubeio::getActiveSide(){
-  readSensorData(_xPin, _yPin, _zPin);
-
-  x_g_value = ((((double)(x_value * 3.3) / 4095) - 1.65) / 0.330);
-  y_g_value = ((((double)(y_value * 3.3) / 4095) - 1.65) / 0.330);
-  z_g_value = ((((double)(z_value * 3.3) / 4095) - 1.80) / 0.330);
-
-  roll = (((atan2(y_g_value, z_g_value) * 180) / 3.14) + 180);
-  pitch = (((atan2(z_g_value, x_g_value) * 180) / 3.14) + 180);
 
   for (int i = 0; i < 6; ++i){
     if (roll > sides_array[i][0] - _threshold && roll < sides_array[i][0] + _threshold &&
@@ -39,12 +31,18 @@ char Cubeio::getActiveSide(){
 }
 
 String Cubeio::getCalibrationResult(){
+  getRollPitch();
+  
   for(int i = 0; i < 6; i++){
     payload = String(side[i]) + "," + String(sides_array[i][1]) + "," + String(sides_array[i][0]);
     Particle.publish("log_calibration_value", payload, PUBLIC);
     delay(1000);
   }
   return payload;
+}
+
+void Cubeio::setCalibration(){
+
 }
 
 void Cubeio::setLedColor(int r, int g, int b){
@@ -94,9 +92,20 @@ bool Cubeio::buttonPressed(){
   else return true;
 }
 
-
 void Cubeio::readSensorData(int x, int y, int z){
-    x_value = analogRead(x);
-    y_value = analogRead(y);
-    z_value = analogRead(z);
+  x_value = analogRead(x);
+  y_value = analogRead(y);
+  z_value = analogRead(z);
+}
+
+void Cubeio::getRollPitch(){
+  readSensorData(_xPin, _yPin, _zPin);
+
+  x_g_value = ((((double)(x_value * 3.3) / 4095) - 1.65) / 0.330);
+  y_g_value = ((((double)(y_value * 3.3) / 4095) - 1.65) / 0.330);
+  z_g_value = ((((double)(z_value * 3.3) / 4095) - 1.80) / 0.330);
+
+  roll = (((atan2(y_g_value, z_g_value) * 180) / 3.14) + 180);
+  pitch = (((atan2(z_g_value, x_g_value) * 180) / 3.14) + 180);
+
 }

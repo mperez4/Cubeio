@@ -8,6 +8,11 @@ int setCalibration(String command);
 int sides_array[6][2];
 int num_sides = 6;
 
+struct calibrationValues {
+  int _sides_array[6][2];
+};
+ calibrationValues savedValues;
+
 void setup(){
   Serial.begin(9600);
   Particle.function("set_calibration", setCalibration);
@@ -19,15 +24,28 @@ void loop(){
 
 int setCalibration(String command){
   if(command == "save"){
+    //update struct with updated sides saved in temp memory
+    for(int i = 0; i < num_sides; i++){
+      savedValues._sides_array[i][0] = sides_array[i][0];
+      savedValues._sides_array[i][1] = sides_array[i][1];
+    }
+    EEPROM.put(0, savedValues);
     Serial.println("Saving results to EEPROM...");
     return 1;
   }
   if(command == "results"){
-    for(int i = 0; i < 6; i++){
+    for(int i = 0; i < num_sides; i++){
       String payload = "";
       payload = String(mycube.side[i]) + "," + String(sides_array[i][1]) + "," + String(sides_array[i][0]);
       Serial.println(payload);
       delay(1000);
+    }
+    return 1;
+  }
+  if(command == "load"){
+    for(int i =0; i < num_sides; i++){
+      mycube.sides_array[i][0] = EEPROM.get(0,savedValues._sides_array[i][0]);
+      mycube.sides_array[i][1] = EEPROM.get(0,savedValues._sides_array[i][1]);
     }
     return 1;
   }

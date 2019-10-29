@@ -15,6 +15,8 @@ Cubeio::Cubeio(const uint8_t switchPin, const uint8_t ledPin, const uint8_t xPin
   pinMode(_switchPin, INPUT_PULLUP);
   externalLed = new Adafruit_NeoPixel(1,1, PIXEL_TYPE);
   externalLed->begin();
+  
+  loadCalibration();
 
 }
 
@@ -43,6 +45,13 @@ String Cubeio::getCalibrationResult(){
 
 void Cubeio::setCalibration(){
 
+}
+
+void Cubeio::loadCalibration(){
+  for(int i =0; i < 6; i++){
+    // sides_array[i][0] = EEPROM.get(1, _calibrationValues._sides_array[i][0]);
+    // sides_array[i][1] = EEPROM.get(1, _calibrationValues._sides_array[i][1]);
+  }
 }
 
 void Cubeio::setLedColor(int r, int g, int b){

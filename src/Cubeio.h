@@ -14,11 +14,13 @@ class Cubeio{
     bool buttonPressed();
     int
       x_value, y_value, z_value;
-    int side[6] = {1,  2, 3, 4, 5, 6};
+    int side[6] = {1, 2, 3, 4, 5, 6};
+    int sides_array[6][2];
     void 
       readSensorData(int x, int y, int z),
       getRollPitch(),
       setCalibration(),
+      loadCalibration(),
       setFrequency(int frequency),
       setThreshold(int threshold),
       setLedColor(int r, int g, int b),
@@ -33,12 +35,14 @@ class Cubeio{
     int 
       _switchPin, _ledPin, _xPin, _yPin, _zPin,
       _threshold, _frequency, active_side;
-    int sides_array[6][2] = {{0, 90}, {5, 36}, {160, 280}, {5, 140}, {53, 90}, {312, 83}};//calibrated
-//    int sides_array[6][2] = {{0, 90}, {0, 0}, {180, 270}, {0, 180}, {90, 90}, {270, 90}};
     String payload;
     double 
       x_g_value, y_g_value, z_g_value;
     volatile int state = LOW;
+    struct calibrationValues {
+      int _sides_array[6][2];
+    };
+    calibrationValues _calibrationValues;
     void 
       calibrate(),
       interruptHandler();

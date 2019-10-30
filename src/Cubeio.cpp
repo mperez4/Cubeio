@@ -13,11 +13,11 @@ Cubeio::Cubeio(const uint8_t switchPin, const uint8_t ledPin, const uint8_t xPin
   _zPin = zPin;
 
   pinMode(_switchPin, INPUT_PULLUP);
+  pinMode(D7, OUTPUT);
   externalLed = new Adafruit_NeoPixel(1,1, PIXEL_TYPE);
   externalLed->begin();
-  
-  loadCalibration();
 
+  loadCalibration();
 }
 
 char Cubeio::getActiveSide(){

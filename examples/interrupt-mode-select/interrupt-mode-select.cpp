@@ -10,7 +10,6 @@ unsigned long start_time;
 unsigned long current_time;
 unsigned long elapsed_time;
 const int mode_threshold = 2000;
-bool state = false;
 
 int modeSelect(int current_case);
 void modeHandler(void);

@@ -5,26 +5,15 @@
 
 Cubeio mycube(D6, D1, A1,A2,A3);
 int setCalibration(String command);
-int sides_array[6][2];
 int num_sides = 6;
 
-struct calibrationValues {
-  int side;
-  int _sides_array[6][2];
-};
 
-struct prvalues{
+struct calibrationValues{
   int side;
   int pitch;
   int roll;
-};
-
-union{
-  prvalues prvars;
-}storedValues[6], getValues[6];
-
-//prvalues getValues[6];
-
+} storedValues[6], valueSet;
+ 
  int addr = 0;
 
 void setup(){
@@ -38,56 +27,47 @@ void loop(){
 
 int setCalibration(String command){
   if(command == "save"){
+    //saves local values into the EEPROM address
     EEPROM.put(addr, storedValues);
-    return 1;
-  }
-  if(command == "results"){
-    for(int i = 0; i < num_sides; i++){
-      String payload = "";
-      payload = String(mycube.side[i]) + "," + String(mycube.sides_array[i][1]) + "," + String(mycube.sides_array[i][0]);
-      Serial.println(payload);
-      delay(1000);
-    }
-    return 1;
-  }
-  if(command == "printstruct"){
-    for(int i = 0; i < num_sides; i++){
-      Serial.print(storedValues[i].prvars.side);
-      Serial.print(", ");
-      Serial.print(storedValues[i].prvars.roll);
-      Serial.print(", ");
-      Serial.println(storedValues[i].prvars.pitch);
-    }
-    return 1;
-  }
-  if(command == "print"){
-    for(int i = 0; i < 6; i++){
-      int mypitch = EEPROM.get(addr, getValues[i].prvars.pitch);
-      int myroll = EEPROM.get(addr, getValues[i].prvars.roll);
-
-      Serial.print(mypitch);
-      Serial.print(", ");
-      Serial.println(myroll);
-
-    }
+    Serial.println("Saved calibration values to EEPROM");
     return 1;
   }
   if(command == "update"){
+    //saves the values from the EEPROM into the cube object.
+    //The values are applied by default on reset
     for(int i =0; i < num_sides; i++){
-      mycube.sides_array[i][0] = EEPROM.get(addr,getValues[i].prvars.roll);
-      mycube.sides_array[i][1] = EEPROM.get(addr,getValues[i].prvars.pitch);
+      EEPROM.get(addr + i*sizeof(calibrationValues), valueSet);
+      mycube.sides_array[i][0] = valueSet.roll;
+      mycube.sides_array[i][1] = valueSet.pitch;
+    }
+    Serial.println("Updated cube's roll and pitch values from EEPROM");
+    return 1;
+  }
+  if(command == "printEEPROM"){
+    //prints the calibration values from the EEPROM
+    Serial.println("Calibration values stored in EEPROM:");
+    for(int i = 0; i < 6; i++){
+      EEPROM.get(addr + i*sizeof(calibrationValues), valueSet);
+      Serial.printlnf("%d: %d, %d, %d", i, valueSet.side, valueSet.pitch, valueSet.roll);
+    }
+    return 1;
+  }
+    if(command == "printCube"){
+    //prints the calibration numbers that the cube obj is using
+    Serial.println("Calibration values stored in Cube:");
+    for(int i = 0; i < num_sides; i++){
+      Serial.printlnf("Side: %d Pitch: %d Roll: %d", mycube.side[i], mycube.sides_array[i][0], mycube.sides_array[i][1]);
     }
     return 1;
   }
   if(isdigit(command[0]) && command.toInt() > 0 && command.toInt() <= num_sides){
     mycube.getRollPitch();
-
-    storedValues[command.toInt() - 1].prvars.side = command.toInt() - 1;
-    storedValues[command.toInt() - 1].prvars.pitch = mycube.pitch;
-    storedValues[command.toInt() - 1].prvars.roll = mycube.roll;
-
-    Serial.println("Side: " + command + " Pitch: " + String(mycube.pitch) +
-      "  Roll: " + String(mycube.roll));
+    //stores the values locally to RAM
+    storedValues[command.toInt() - 1].side = command.toInt();
+    storedValues[command.toInt() - 1].pitch = mycube.pitch;
+    storedValues[command.toInt() - 1].roll = mycube.roll;
+    Serial.printlnf("Side: %d Pitch: %d Roll: %d", command.toInt(), mycube.pitch, mycube.roll);
+ 
     return command.toInt();
   }
   else{

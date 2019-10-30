@@ -9,9 +9,11 @@ int _case = 0;
 unsigned long start_time;
 unsigned long current_time;
 unsigned long elapsed_time;
-int modeSelect(int self_state);
-
+const int mode_threshold = 2000;
 bool state = false;
+
+int modeSelect(int current_case);
+void modeHandler(void);
 
 void setup(){
   Serial.begin(9600);
@@ -21,26 +23,44 @@ void setup(){
 }
 
 void loop(){
-  _case = modeSelect(_case);
+  modeHandler();
+  switch (_case){
+    case 1:
+      mycube.setLedColor(0,255,0);
+    break;
+    case 2: 
+      mycube.setLedColor(255,0,0);
+    break;
+    default:
+      mycube.setLedColor(255,255,255);
+    break;
+  }
 }
 
-int modeSelect(int self_state){
-  const int mode_threshold = 3000;
-  current_time = millis();
-  elapsed_time = current_time - start_time;
-
-  if(mycube.buttonPressed()){
-    Serial.println(state);
-    state = !state;
-    start_time = millis();
-    mycube.setLedColor(36,100,200);
-  }else{
+//listens for either a short(two seconds) press, a long(four seconds) press, or
+//a longest(six seconds) press and returns a value that is used in a switch statment
+int modeSelect(int current_case){
+  if(elapsed_time > mode_threshold && elapsed_time < mode_threshold * 2){
+    mycube.setLedColor(0,255,0);
+    return 1;
+  }if(elapsed_time > mode_threshold * 2 && elapsed_time < mode_threshold * 3){
+    mycube.setLedColor(255,0,0);
+    return 2;
+  }if(elapsed_time > mode_threshold * 3 && elapsed_time < mode_threshold * 4){
     mycube.setLedColor(255,255,255);
+    return 0;
+  }else{
+    return current_case;
   }
-  if(elapsed_time > mode_threshold && elapsed_time < mode_threshold * 2 && state){
-    Serial.println("Button was pressed for three seconds");
-    mycube.setLedColor(255,100,20);
-    state = false;
+}
+//unfortunately we cannot make a handler while using interrupts,
+//so the function needs to be called.
+void modeHandler(){
+  if(mycube.buttonPressed()){
+    start_time = millis();
+    elapsed_time =  start_time - current_time;
+    _case = modeSelect(_case);
+  }else{
+    current_time = millis();
   }
-  return self_state;
 }

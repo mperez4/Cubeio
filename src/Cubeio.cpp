@@ -21,26 +21,22 @@ Cubeio::Cubeio(const uint8_t switchPin, const uint8_t ledPin, const uint8_t xPin
 }
 
 char Cubeio::getActiveSide(){
-
+  getRollPitch();
   for (int i = 0; i < 6; ++i){
     if (roll > sides_array[i][0] - _threshold && roll < sides_array[i][0] + _threshold &&
         pitch > sides_array[i][1] - _threshold && pitch < sides_array[i][1] + _threshold){
         active_side = side[i];
     }
   }
-  Serial.println(active_side);
   return active_side;
 }
 
 String Cubeio::getCalibrationResult(){
   getRollPitch();
-  
   for(int i = 0; i < 6; i++){
-    payload = String(side[i]) + "," + String(sides_array[i][1]) + "," + String(sides_array[i][0]);
-    Particle.publish("log_calibration_value", payload, PUBLIC);
-    delay(1000);
+    Serial.printlnf("Side: %d Pitch: %d Roll: %d", side[i], sides_array[i][0], sides_array[i][1]);
   }
-  return payload;
+
 }
 
 void Cubeio::setCalibration(){

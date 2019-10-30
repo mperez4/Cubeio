@@ -35,14 +35,16 @@ class Cubeio{
     int 
       _switchPin, _ledPin, _xPin, _yPin, _zPin,
       _threshold, _frequency, active_side;
+    int addr = 0;
     String payload;
     double 
       x_g_value, y_g_value, z_g_value;
     volatile int state = LOW;
     struct calibrationValues {
-      int _sides_array[6][2];
-    };
-    calibrationValues _calibrationValues;
+      int side;
+      int pitch;
+      int roll;
+    }calibrationValues, valueSet;
     void 
       calibrate(),
       interruptHandler();

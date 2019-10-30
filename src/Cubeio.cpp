@@ -49,8 +49,9 @@ void Cubeio::setCalibration(){
 
 void Cubeio::loadCalibration(){
   for(int i =0; i < 6; i++){
-    // sides_array[i][0] = EEPROM.get(1, _calibrationValues._sides_array[i][0]);
-    // sides_array[i][1] = EEPROM.get(1, _calibrationValues._sides_array[i][1]);
+    EEPROM.get(addr + i*sizeof(calibrationValues), valueSet);
+    sides_array[i][0] = valueSet.roll;
+    sides_array[i][1] = valueSet.pitch;
   }
 }
 

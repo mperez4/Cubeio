@@ -15,10 +15,12 @@ struct calibrationValues{
 } storedValues[6], valueSet;
  
  int addr = 0;
+int active_side;
 
 void setup(){
   Serial.begin(9600);
   Particle.function("set_calibration", setCalibration);
+  mycube.setThreshold(20);
 }
 
 void loop(){
@@ -37,8 +39,8 @@ int setCalibration(String command){
     //The values are applied by default on reset
     for(int i =0; i < num_sides; i++){
       EEPROM.get(addr + i*sizeof(calibrationValues), valueSet);
-      mycube.sides_array[i][0] = valueSet.roll;
-      mycube.sides_array[i][1] = valueSet.pitch;
+      mycube.sides_array[i][0] = valueSet.pitch;
+      mycube.sides_array[i][1] = valueSet.roll;
     }
     Serial.println("Updated cube's roll and pitch values from EEPROM");
     return 1;

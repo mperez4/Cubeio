@@ -1,4 +1,4 @@
 #!/bin/bash
 
 rm *.bin
-particle --no-update-check compile photon example-1.cpp --saveTo example-1.bin
+particle --no-update-check compile photon post-on-press.cpp --saveTo example-1.bin

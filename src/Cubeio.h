@@ -20,7 +20,6 @@ class Cubeio{
       readSensorData(int x, int y, int z),
       getRollPitch(),
       setCalibration(),
-      loadCalibration(),
       setFrequency(int frequency),
       setThreshold(int threshold),
       setLedColor(int r, int g, int b),
@@ -34,7 +33,8 @@ class Cubeio{
     Adafruit_NeoPixel *externalLed;
     int 
       _switchPin, _ledPin, _xPin, _yPin, _zPin,
-      _threshold, _frequency, active_side;
+      _frequency, active_side;
+    int _threshold = 20;
     int addr = 0;
     String payload;
     double 
@@ -45,9 +45,7 @@ class Cubeio{
       int pitch;
       int roll;
     }calibrationValues, valueSet;
-    void 
-      calibrate(),
-      interruptHandler();
+    void interruptHandler();
 };
 
 #endif

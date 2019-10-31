@@ -17,37 +17,32 @@ Cubeio::Cubeio(const uint8_t switchPin, const uint8_t ledPin, const uint8_t xPin
   externalLed = new Adafruit_NeoPixel(1,1, PIXEL_TYPE);
   externalLed->begin();
 
-  loadCalibration();
+  setCalibration();
 }
 
 char Cubeio::getActiveSide(){
   getRollPitch();
   for (int i = 0; i < 6; ++i){
-    if (roll > sides_array[i][0] - _threshold && roll < sides_array[i][0] + _threshold &&
-        pitch > sides_array[i][1] - _threshold && pitch < sides_array[i][1] + _threshold){
+    if (roll > sides_array[i][1] - _threshold && roll < sides_array[i][1] + _threshold &&
+        pitch > sides_array[i][0] - _threshold && pitch < sides_array[i][0] + _threshold){
         active_side = side[i];
+        //Serial.printlnf("Pitch: %d, %d Roll: %d, %d",pitch, sides_array[i][0], roll, sides_array[i][1]);
     }
   }
   return active_side;
 }
 
 String Cubeio::getCalibrationResult(){
-  getRollPitch();
   for(int i = 0; i < 6; i++){
     Serial.printlnf("Side: %d Pitch: %d Roll: %d", side[i], sides_array[i][0], sides_array[i][1]);
   }
-
 }
 
 void Cubeio::setCalibration(){
-
-}
-
-void Cubeio::loadCalibration(){
   for(int i =0; i < 6; i++){
     EEPROM.get(addr + i*sizeof(calibrationValues), valueSet);
-    sides_array[i][0] = valueSet.roll;
-    sides_array[i][1] = valueSet.pitch;
+    sides_array[i][0] = valueSet.pitch;
+    sides_array[i][1] = valueSet.roll;
   }
 }
 
@@ -113,5 +108,4 @@ void Cubeio::getRollPitch(){
 
   roll = (((atan2(y_g_value, z_g_value) * 180) / 3.14) + 180);
   pitch = (((atan2(z_g_value, x_g_value) * 180) / 3.14) + 180);
-
 }

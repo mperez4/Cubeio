@@ -10,3 +10,4 @@
 src/notes.txt
 /target*
 .vscode/
+*.swp

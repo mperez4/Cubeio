@@ -24,6 +24,10 @@ This should create the library scaffolding necessary to import the library from 
 $ particle library add Cubeio
 ```
 
+```
+$ particle library view Cubeio
+```
+
 ## Usage
 Once you install the library through the Particle CLI, you should be ready to go.
 ```c++
@@ -39,6 +43,7 @@ There is a pretty handy script called `upload.sh` inside of every example. `uplo
 ```bash
 $ ./examples/set-calibration/upload.sh
 ```
+This script was working well before I upgraded to Catalina... For now, you can use Particle's cloud compiler, which works fine it just takes longer... 
 
 ## Hardware
 Cubeio uses an Analog Devices [ADXL325](https://www.analog.com/media/en/technical-documentation/data-sheets/ADXL325.pdf) 3-axis accelerometer to calculate the roll and pitch (±5 g) of the cube, a Microchip [MCP73831](http://ww1.microchip.com/downloads/en/DeviceDoc/20001984g.pdf) Li-Polymer charge managment controller, a Worldsemi [WS2812](https://cdn-shop.adafruit.com/datasheets/WS2812.pdf) RGB LED, a single [Schmitt-Trigger](https://datasheet.lcsc.com/szlcsc/ON-Semicon-ON-MC74VHC1G14DTT1G_C242264.pdf) inverter, and a button among other hardware components.

@@ -17,7 +17,7 @@ Cubeio::Cubeio(const uint8_t switchPin, const uint8_t ledPin, const uint8_t xPin
 
   externalLed = new Adafruit_NeoPixel(1,1, PIXEL_TYPE);
   externalLed->begin();
-  setCalibration();
+  loadCalibrationValuesFromEEPROM();
 }
 
 char Cubeio::getActiveSide(){
@@ -47,7 +47,7 @@ void Cubeio::getCalibrationResult(){
   }
 }
 
-void Cubeio::setCalibration(){
+void Cubeio::loadCalibrationValuesFromEEPROM(){
   for(int i =0; i < 6; i++){
     EEPROM.get(addr + i*sizeof(calibrationValues), valueSet);
     sides_array[i][0] = valueSet.pitch;

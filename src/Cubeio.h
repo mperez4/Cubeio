@@ -18,7 +18,7 @@ class Cubeio{
     void 
       readSensorData(int x, int y, int z),
       calculateRollPitch(),
-      setCalibration(),
+      loadCalibrationValuesFromEEPROM(),
       getCalibrationResult(),
       setFrequency(int frequency),
       setThreshold(int threshold),
@@ -38,6 +38,7 @@ class Cubeio{
     int _threshold = 20;
     int addr = 0;
     String payload;
+
     double 
       x_g_value, y_g_value, z_g_value;
     volatile int state = LOW;

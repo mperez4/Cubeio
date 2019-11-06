@@ -14,9 +14,9 @@ Cubeio::Cubeio(const uint8_t switchPin, const uint8_t ledPin, const uint8_t xPin
 
   pinMode(_switchPin, INPUT_PULLUP);
   pinMode(D7, OUTPUT);
+
   externalLed = new Adafruit_NeoPixel(1,1, PIXEL_TYPE);
   externalLed->begin();
-
   setCalibration();
 }
 
@@ -26,13 +26,22 @@ char Cubeio::getActiveSide(){
     if (roll > sides_array[i][1] - _threshold && roll < sides_array[i][1] + _threshold &&
         pitch > sides_array[i][0] - _threshold && pitch < sides_array[i][0] + _threshold){
         active_side = side[i];
-        //Serial.printlnf("Pitch: %d, %d Roll: %d, %d",pitch, sides_array[i][0], roll, sides_array[i][1]);
+        //Serial.printlnf("Pitch: %d, %d Roll: %d, %d Side: %d",pitch, sides_array[i][0], roll, sides_array[i][1], active_side);
     }
   }
   return active_side;
 }
 
-String Cubeio::getCalibrationResult(){
+void Cubeio::publishOnChange(String eventName){
+  _currentside = getActiveSide();
+  if(_prevside != _currentside){
+    Particle.publish(eventName, String(_currentside));
+    delay(1000);//so that it doesnt spam the particle api
+  }
+  _prevside = _currentside;
+}
+
+void Cubeio::getCalibrationResult(){
   for(int i = 0; i < 6; i++){
     Serial.printlnf("Side: %d Pitch: %d Roll: %d", side[i], sides_array[i][0], sides_array[i][1]);
   }

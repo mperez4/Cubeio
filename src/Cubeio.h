@@ -10,7 +10,6 @@ class Cubeio{
     Cubeio(const uint8_t switchPin, const uint8_t ledPin, const uint8_t xPin, const uint8_t yPin, const uint8_t zPin);
     uint8_t roll, pitch;
     char getActiveSide();
-    String getCalibrationResult();
     bool buttonPressed();
     int
       x_value, y_value, z_value;
@@ -20,10 +19,12 @@ class Cubeio{
       readSensorData(int x, int y, int z),
       getRollPitch(),
       setCalibration(),
+      getCalibrationResult(),
       setFrequency(int frequency),
       setThreshold(int threshold),
       setLedColor(int r, int g, int b),
       setLedBrightness(int brightness),
+      publishOnChange(String eventName = "active_side"),
       enableLedControl(),
       attachButton(InterruptMode mode),
       detachButton(),
@@ -33,7 +34,7 @@ class Cubeio{
     Adafruit_NeoPixel *externalLed;
     int 
       _switchPin, _ledPin, _xPin, _yPin, _zPin,
-      _frequency, active_side;
+      _frequency, active_side, _prevside, _currentside;
     int _threshold = 20;
     int addr = 0;
     String payload;

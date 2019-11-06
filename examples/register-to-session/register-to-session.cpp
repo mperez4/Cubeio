@@ -110,8 +110,10 @@ int registrationResponse(String command){
   if(command == "0"){
     status = "unregistered";
     isRegistered = false;
+    //change case
   }if(command == "1"){
     status = "registered";
     isRegistered = true;
+    //change case
   }
 }

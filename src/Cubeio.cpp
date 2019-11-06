@@ -21,7 +21,7 @@ Cubeio::Cubeio(const uint8_t switchPin, const uint8_t ledPin, const uint8_t xPin
 }
 
 char Cubeio::getActiveSide(){
-  getRollPitch();
+  calculateRollPitch();
   for (int i = 0; i < 6; ++i){
     if (roll > sides_array[i][1] - _threshold && roll < sides_array[i][1] + _threshold &&
         pitch > sides_array[i][0] - _threshold && pitch < sides_array[i][0] + _threshold){
@@ -108,7 +108,7 @@ void Cubeio::readSensorData(int x, int y, int z){
   z_value = analogRead(z);
 }
 
-void Cubeio::getRollPitch(){
+void Cubeio::calculateRollPitch(){
   readSensorData(_xPin, _yPin, _zPin);
 
   x_g_value = ((((double)(x_value * 3.3) / 4095) - 1.65) / 0.330);

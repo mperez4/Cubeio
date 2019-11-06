@@ -17,7 +17,7 @@ class Cubeio{
     int sides_array[6][2];
     void 
       readSensorData(int x, int y, int z),
-      getRollPitch(),
+      calculateRollPitch(),
       setCalibration(),
       getCalibrationResult(),
       setFrequency(int frequency),
